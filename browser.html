@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>soda-js sample</title>
+</head>
+
+<script src="../lib/soda-js.bundle.js"></script>
+<script>
+	function getQuery() {
+
+		var results = "";
+		var county = document.getElementById("county").value;
+		var consumer = new soda.Consumer('data.medicare.gov');
+		var query = consumer.query()
+			.withDataset('b27b-2uc7')
+			.where({
+				provider_county_name: county
+			})
+			.order('overall_rating')
+			.getRows()
+			.on('success', function(rows) {
+				for (var row in rows) {
+					document.write(rows[row].provider_name);
+					document.write("<br>")
+				}
+			})
+			.on('error', function(error) {
+				console.error(error);
+			});
+	}
+</script>
+
+<body>
+	<b>Enter your county: </b>
+	<form onsubmit="getQuery()">
+		<input type="text" name="county" id="county" />
+		<input type="submit"></form>
+	<div id="results"></div>
+</body>
+
+</html>
